@@ -15,19 +15,22 @@ function crearFuncion($coleccionFuncionesAuxiliar, $coleccionFunc){
     $duracionFuncion = trim(fgets(STDIN));
 
     do {
-        print_r($coleccionFuncionesAuxiliar);
         $existeHorarioFuncion = false;
         echo "Ingrese el horario de la funcion" . "\n";
         echo "Hora: ";
         $horaFuncion = trim(fgets(STDIN));
         echo "Minutos: ";
         $minutosFuncion = trim(fgets(STDIN));
-
+        //convierto el horario de comienzo de la nueva funcion a minutos
+        $horarioFuncionEnMinutos = ($horaFuncion*60)+$minutosFuncion;
         for($cont2=0; $cont2<(count($coleccionFuncionesAuxiliar)); $cont2++){
-            if($coleccionFuncionesAuxiliar[$cont2]["horaInicioFuncion"]["hora"]==$horaFuncion){
-                if($coleccionFuncionesAuxiliar[$cont2]["horaInicioFuncion"]["minutos"]==$minutosFuncion){
-                    $existeHorarioFuncion = true;
-                }
+            //convierto el horario de inicio de la funcion ACTUAL a minutos
+            $horaInicioFuncion = ($coleccionFuncionesAuxiliar[$cont2]["horaInicioFuncion"]["hora"]*60)+$coleccionFuncionesAuxiliar[$cont2]["horaInicioFuncion"]["minutos"];
+            //establezco el horario de finalizacion de la funcion actual en minutos
+            $horaFinalizacion = $horaInicioFuncion + $coleccionFuncionesAuxiliar[$cont2]["duracion"];
+            //reviso si el horario de la nueva funcion se encuentra entre el horario de comienzo y finalizacion de la funcion actual
+            if(($horarioFuncionEnMinutos>=$horaInicioFuncion) && ($horarioFuncionEnMinutos<=$horaFinalizacion)){
+                $existeHorarioFuncion = true;
             }
         }
         if($existeHorarioFuncion){
@@ -36,31 +39,32 @@ function crearFuncion($coleccionFuncionesAuxiliar, $coleccionFunc){
             echo "El horario esta disponible. Horario seteado para la funcion " . $nombreFuncion . "\n";
         }
     }while($existeHorarioFuncion);
-
-    $horaInicioFuncion = array("hora"=>$horaFuncion,"minutos"=>$minutosFuncion);
-    
+    //creo el array de la funcion nueva para guardarla en la coleccion de funciones auxiliar
     $funcionNueva = array("nombre"=>$nombreFuncion, "precio"=>$precioFuncion, "horaInicioFuncion"=>array("hora"=>$horaFuncion,"minutos"=>$minutosFuncion), "duracion"=>$duracionFuncion);
     array_push($coleccionFuncionesAuxiliar, $funcionNueva);
-    
-    $funcion = new Funcion($nombreFuncion, $horaInicioFuncion, $duracionFuncion, $precioFuncion);
 
+    //creo el objeto funcion para poder almacenarlo en la coleccion de funciones
+    $horaInicioFuncion = array("hora"=>$horaFuncion,"minutos"=>$minutosFuncion);
+    $funcion = new Funcion($nombreFuncion, $horaInicioFuncion, $duracionFuncion, $precioFuncion);
     array_push($coleccionFunc, $funcion);
 
+    //array de colecciones para devolverlas al programa principal y podes implementarlas
     $conjuntoColecciones = array("auxiliar"=>$coleccionFuncionesAuxiliar, "objeto"=>$coleccionFunc);
     return($conjuntoColecciones);
 }
 
 /**
- * @param array $coleFuncionesTeatro
+ * 
 */
-function verFunciones($coleFuncionesTeatro){
-    $auxiliarFunciones = 0;
+function verFunciones($teatroFunciones){
+    // $auxiliarFunciones = 0;
     echo "--------------FUNCIONES--------------" . "\n";
-    for ($contadorVueltas=1; $contadorVueltas <= (count($coleFuncionesTeatro)) ; $contadorVueltas++) { 
-        echo $coleFuncionesTeatro[$auxiliarFunciones];
-        echo "-------------------------------------" . "\n";
-        $auxiliarFunciones++;
-    }
+    // for ($contadorVueltas=1; $contadorVueltas <= (count($coleFuncionesTeatro)) ; $contadorVueltas++) { 
+    //     echo $coleFuncionesTeatro[$auxiliarFunciones];
+    //     echo "-------------------------------------" . "\n";
+    //     $auxiliarFunciones++;
+    // }
+    echo $teatroFunciones->consultarFunciones();
 }
 
 /**
@@ -78,12 +82,13 @@ $coleccionFuncionesAux[] = array("nombre"=>'base', "precio"=>'0', "horaInicioFun
 
 $coleccionFunciones = array();
 
+//este for lo hice para crear las funciones y almacenarlas en la coleccionFunciones para poder crear el objeto teatro
 for($cont=0; $cont<$cantFunciones; $cont++){
     $coleFuncionNormalAux = crearFuncion($coleccionFuncionesAux, $coleccionFunciones);
     $coleccionFuncionesAux=$coleFuncionNormalAux["auxiliar"];
     $coleccionFunciones=$coleFuncionNormalAux["objeto"];
 }
-
+//creo objeto teatro
 $teatro = new Teatro($nombreTeatro, $direccionTeatro, $coleccionFunciones);
 
 do {
@@ -119,7 +124,7 @@ do {
         case '3':
             echo "---------INFORMACION TEATRO---------"  . "\n";
             echo $teatro;
-            verFunciones($teatro->getColeFunciones());
+            // verFunciones($teatro);
             echo "------------------------------------" . "\n";
             break;
         case '4':
@@ -128,7 +133,7 @@ do {
                 $coleFuncionesTeatro=$teatro->getColeFunciones();
 
                 echo "ELIJA QUE FUNCION DESEA CAMBIAR SUS ATRIBUTOS" . "\n";
-
+                //muestro el nombre de todas las funciones
                 for ($contadorVueltas=1; $contadorVueltas <= (count($coleFuncionesTeatro)) ; $contadorVueltas++) { 
                     echo $contadorVueltas . ": Funcion " . $coleFuncionesTeatro[$auxiliarFunciones]->getNombre() . "\n";
                     $auxiliarFunciones++;
@@ -136,6 +141,7 @@ do {
                 echo count($coleFuncionesTeatro)+1 . ": CANCELAR" . "\n";
                 echo "Opcion: ";
                 $opcionFuncion = trim(fgets(STDIN));
+                //entro a cambiar los datos de una funcion en caso de que no sea la opcion de CANCELAR
                 if($opcionFuncion<>count($coleFuncionesTeatro)+1){
                     echo "Nombre funcion " . $opcionFuncion . " actual: " . $coleFuncionesTeatro[($opcionFuncion-1)]->getNombre() . "\n";
                     echo "Precio funcion " . $opcionFuncion . " actual: " . $coleFuncionesTeatro[($opcionFuncion-1)]->getPrecio() . "\n";
@@ -149,7 +155,7 @@ do {
             }while($opcionFuncion<>count($coleFuncionesTeatro)+1);
             break;
         case '5':
-            verFunciones($teatro->getColeFunciones());
+            verFunciones($teatro);
             break;
         case '6':
             $coleFuncionNormalAux=crearFuncion($coleccionFuncionesAux, $coleccionFunciones);

@@ -37,11 +37,25 @@ class Teatro{
     public function cambiarDireccion($dire){
         $this->setDireccion($dire);
     }
+    public function consultarFunciones(){
+        $auxiliarFunciones = 0;
+        $coleccionFun = $this->getColeFunciones();
+        $stringColecciones = "";
+        for ($contadorVueltas=1; $contadorVueltas <= (count($coleccionFun)) ; $contadorVueltas++) { 
+            $stringColecciones = $stringColecciones . $coleccionFun[$auxiliarFunciones] . "-------------------------------------" . "\n";
+            // echo "-------------------------------------" . "\n";
+            $auxiliarFunciones++;
+        }
+        return $stringColecciones;
+    }
     
     public function __toString()
     {
+        $funciones = $this->consultarFunciones();
         return ("Nombre del teatro: " . $this->getNombre() . "\n" .
-                "Direccion del teatro: " . $this->getDireccion() . "\n"
+                "Direccion del teatro: " . $this->getDireccion() . "\n" .
+                "--------------FUNCIONES--------------" . "\n" . 
+                $funciones
             );
 
     }
