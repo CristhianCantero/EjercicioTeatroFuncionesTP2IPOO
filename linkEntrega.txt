@@ -1,5 +1,3 @@
 Alumno: Cristhian Emanuel Cantero
 
 https://github.com/CristhianCantero/EjercicioTeatroFuncionesTP2IPOO
-
-Espero les guste :)
