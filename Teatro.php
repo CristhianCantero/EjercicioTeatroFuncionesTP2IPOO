@@ -43,7 +43,6 @@ class Teatro{
         $stringColecciones = "";
         for ($contadorVueltas=1; $contadorVueltas <= (count($coleccionFun)) ; $contadorVueltas++) { 
             $stringColecciones = $stringColecciones . $coleccionFun[$auxiliarFunciones] . "-------------------------------------" . "\n";
-            // echo "-------------------------------------" . "\n";
             $auxiliarFunciones++;
         }
         return $stringColecciones;

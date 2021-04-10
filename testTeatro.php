@@ -57,13 +57,7 @@ function crearFuncion($coleccionFuncionesAuxiliar, $coleccionFunc){
  * 
 */
 function verFunciones($teatroFunciones){
-    // $auxiliarFunciones = 0;
     echo "--------------FUNCIONES--------------" . "\n";
-    // for ($contadorVueltas=1; $contadorVueltas <= (count($coleFuncionesTeatro)) ; $contadorVueltas++) { 
-    //     echo $coleFuncionesTeatro[$auxiliarFunciones];
-    //     echo "-------------------------------------" . "\n";
-    //     $auxiliarFunciones++;
-    // }
     echo $teatroFunciones->consultarFunciones();
 }
 
@@ -124,7 +118,6 @@ do {
         case '3':
             echo "---------INFORMACION TEATRO---------"  . "\n";
             echo $teatro;
-            // verFunciones($teatro);
             echo "------------------------------------" . "\n";
             break;
         case '4':
